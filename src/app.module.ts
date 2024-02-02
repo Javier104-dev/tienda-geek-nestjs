@@ -1,11 +1,18 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { configDb } from './config/configDb';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => {
+        return configDb(configService);
+      },
+    }),
   ],
-  controllers: [],
-  providers: [],
 })
 export class AppModule {}
