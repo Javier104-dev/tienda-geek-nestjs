@@ -3,6 +3,7 @@ import { ProductRepository } from '../repository/product.repository';
 import { DbProductDto } from '../dto/db.product.dto';
 import { NewProductDto } from '../dto/new.product.dto';
 import { UpdateProductDto } from '../dto/update.product.dto';
+import { DeleteResult } from 'typeorm';
 
 @Injectable()
 export class ProductService {
@@ -23,5 +24,9 @@ export class ProductService {
 
   async updateProduct(body: UpdateProductDto): Promise<DbProductDto> {
     return this.productRepository.updateProduct(body);
+  }
+
+  async deleteProduct(id: number): Promise<DeleteResult> {
+    return this.productRepository.deleteProduct(id);
   }
 }

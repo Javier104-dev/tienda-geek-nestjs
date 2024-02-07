@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
@@ -46,5 +47,14 @@ export class ProductController {
     const UpdatedProduct =
       await this.productService.updateProduct(UpdateProduct);
     return UpdatedProduct;
+  }
+
+  @Delete(':id')
+  async delelteProduct(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<DbProductDto> {
+    const product = await this.productService.getProduct(id);
+    await this.productService.deleteProduct(product.id);
+    return product;
   }
 }
