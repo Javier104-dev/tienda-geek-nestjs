@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { plainToInstance } from 'class-transformer';
 import { DbProductDto } from '../dto/db.product.dto';
+import { NewProductDto } from '../dto/new.product.dto';
 
 @Injectable()
 export class ProductRepository {
@@ -27,6 +28,13 @@ export class ProductRepository {
       );
 
     const productDto = plainToInstance(DbProductDto, product);
+    return productDto;
+  }
+
+  async createProduct(body: NewProductDto): Promise<DbProductDto> {
+    const product = this.productEntity.create(body);
+    const createdProduct = await this.productEntity.save(product);
+    const productDto = plainToInstance(DbProductDto, createdProduct);
     return productDto;
   }
 }
