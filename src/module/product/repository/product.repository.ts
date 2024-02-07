@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { plainToInstance } from 'class-transformer';
 import { DbProductDto } from '../dto/db.product.dto';
 import { NewProductDto } from '../dto/new.product.dto';
+import { UpdateProductDto } from '../dto/update.product.dto';
 
 @Injectable()
 export class ProductRepository {
@@ -36,5 +37,17 @@ export class ProductRepository {
     const createdProduct = await this.productEntity.save(product);
     const productDto = plainToInstance(DbProductDto, createdProduct);
     return productDto;
+  }
+
+  async updateProduct(body: UpdateProductDto): Promise<DbProductDto> {
+    const product = await this.productEntity.preload(body);
+
+    if (!product)
+      throw new NotFoundException(
+        `No se encontraron productos con el id: ${body.id}`,
+      );
+
+    const updatedProduct = await this.productEntity.save(product);
+    return updatedProduct;
   }
 }
