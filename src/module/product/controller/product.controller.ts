@@ -7,12 +7,17 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ProductService } from '../service/product.service';
 import { DbProductDto } from '../dto/db.product.dto';
 import { NewProductDto } from '../dto/new.product.dto';
 import { plainToInstance } from 'class-transformer';
 import { UpdateProductDto } from '../dto/update.product.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { fileFilter, renameImage } from './prueba';
 
 @Controller('geekstore/product')
 export class ProductController {
@@ -56,5 +61,19 @@ export class ProductController {
     const product = await this.productService.getProduct(id);
     await this.productService.deleteProduct(product.id);
     return product;
+  }
+
+  @Post('prueba')
+  @UseInterceptors(
+    FileInterceptor('image', {
+      storage: diskStorage({
+        destination: './prueba',
+        filename: renameImage,
+      }),
+      fileFilter: fileFilter,
+    }),
+  )
+  async prueba(@UploadedFile() file: Express.Multer.File) {
+    console.log(file);
   }
 }
