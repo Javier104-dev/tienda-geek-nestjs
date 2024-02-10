@@ -18,7 +18,7 @@ import { UpdateProductDto } from '../dto/update.product.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { multerOptions } from 'src/config/configMulter';
 
-@Controller('geekstore/product')
+@Controller('product')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 

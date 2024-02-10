@@ -26,7 +26,7 @@ const fileFilter = (req, file, callback) => {
 export const multerOptions = () => {
   return {
     storage: diskStorage({
-      destination: './prueba',
+      destination: './upload',
       filename: renameImage,
     }),
     fileFilter: fileFilter,
