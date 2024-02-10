@@ -22,7 +22,7 @@ export class ProductEntity {
   @Column()
   category: string;
 
-  @Column()
+  @Column({ nullable: true, default: null })
   image: string;
 
   @CreateDateColumn({ name: 'created_at' })

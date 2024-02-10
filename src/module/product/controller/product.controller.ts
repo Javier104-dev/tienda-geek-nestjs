@@ -16,8 +16,7 @@ import { NewProductDto } from '../dto/new.product.dto';
 import { plainToInstance } from 'class-transformer';
 import { UpdateProductDto } from '../dto/update.product.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { fileFilter, renameImage } from './prueba';
+import { multerOptions } from 'src/config/configMulter';
 
 @Controller('geekstore/product')
 export class ProductController {
@@ -38,16 +37,26 @@ export class ProductController {
   }
 
   @Post()
-  async createProduct(@Body() body: NewProductDto): Promise<DbProductDto> {
+  @UseInterceptors(FileInterceptor('image', multerOptions()))
+  async createProduct(
+    @Body() body: NewProductDto,
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<DbProductDto> {
+    if (file) body.image = file.filename;
+
     const createdProduct = await this.productService.createProduct(body);
     return createdProduct;
   }
 
   @Put(':id')
+  @UseInterceptors(FileInterceptor('image', multerOptions()))
   async updateProduct(
     @Param('id', ParseIntPipe) id: number,
     @Body() body: NewProductDto,
+    @UploadedFile() file: Express.Multer.File,
   ) {
+    if (file) body.image = file.filename;
+
     const UpdateProduct = plainToInstance(UpdateProductDto, { id, ...body });
     const UpdatedProduct =
       await this.productService.updateProduct(UpdateProduct);
@@ -61,19 +70,5 @@ export class ProductController {
     const product = await this.productService.getProduct(id);
     await this.productService.deleteProduct(product.id);
     return product;
-  }
-
-  @Post('prueba')
-  @UseInterceptors(
-    FileInterceptor('image', {
-      storage: diskStorage({
-        destination: './prueba',
-        filename: renameImage,
-      }),
-      fileFilter: fileFilter,
-    }),
-  )
-  async prueba(@UploadedFile() file: Express.Multer.File) {
-    console.log(file);
   }
 }

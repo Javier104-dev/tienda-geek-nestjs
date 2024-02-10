@@ -15,7 +15,7 @@ export const configDb = (
     entities: [ProductEntity],
     retryDelay: 3000,
     logging: true,
-    // synchronize: true,
+    synchronize: true,
   };
 
   return typeOrmOptions;
