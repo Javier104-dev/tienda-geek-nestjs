@@ -9,6 +9,7 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   app.setGlobalPrefix('geekstore');
+  app.enableCors();
 
   const configService = app.get(ConfigService);
   const PORT = configService.get<number>('SERVER_PORT');
